@@ -1,0 +1,85 @@
+name: StoneTPA
+version: '1.0.0'
+main: dev.stonetpa.plugin.StoneTPA
+api-version: '1.21'
+softdepend: [floodgate]
+author: Stone Plugins
+description: Adds a full teleport request (TPA) system with a player settings menu, configurable countdown and arrival notifications, and particle effects.
+folia-supported: false
+
+commands:
+  tpa:
+    description: Send a teleport request to another player.
+    usage: /tpa <player>
+    permission: stonetpa.use
+    permission-message: ""
+
+  tpahere:
+    description: Request another player to teleport to you.
+    usage: /tpahere <player>
+    permission: stonetpa.use
+    permission-message: ""
+
+  tpaccept:
+    description: Accept a pending teleport request.
+    usage: /tpaccept [player]
+    aliases: [tpaaccept]
+    permission: stonetpa.use
+    permission-message: ""
+
+  tpdeny:
+    description: Deny a pending teleport request.
+    usage: /tpdeny [player]
+    aliases: [tpadeny]
+    permission: stonetpa.use
+    permission-message: ""
+
+  tpacancel:
+    description: Cancel your own outgoing teleport request.
+    usage: /tpacancel
+    permission: stonetpa.use
+    permission-message: ""
+
+  tptoggle:
+    description: Toggle whether you accept incoming teleport requests.
+    usage: /tptoggle
+    permission: stonetpa.use
+    permission-message: ""
+
+  tpasettings:
+    description: Open the Stone TPA settings menu.
+    usage: /tpasettings
+    aliases: [tpset, tpsettings]
+    permission: stonetpa.use
+    permission-message: ""
+
+  # Intentionally has NO permission node - this command must always stay
+  # visible/runnable for everyone. Its own "help" subcommand only lists the
+  # commands the sender actually has permission for (see StoneTPACommand).
+  stonetpa:
+    description: Main Stone TPA command for reloading the plugin and viewing help.
+    usage: /stonetpa <reload|help|checkupdate>
+    aliases: [stpa]
+
+permissions:
+  stonetpa.admin:
+    description: Access to all Stone TPA admin actions (reload, checkupdate, update notifications).
+    default: op
+    children:
+      stonetpa.bypass.toggle: true
+
+  stonetpa.use:
+    description: Allows using the TPA commands and the settings menu.
+    default: true
+
+  stonetpa.bypass.cooldown:
+    description: Allows bypassing the cooldown between sending teleport requests.
+    default: op
+
+  stonetpa.bypass.delay:
+    description: Allows bypassing the teleport delay and countdown.
+    default: op
+
+  stonetpa.bypass.toggle:
+    description: Allows sending teleport requests to players who disabled incoming requests.
+    default: op

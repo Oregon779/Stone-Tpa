@@ -1,0 +1,179 @@
+# =====================================================================
+# StoneTPA Nachrichten (Deutsch)
+#
+# Unterstützte Farbformate, gleichzeitig nutzbar in jeder Nachricht:
+#   &-Codes        z.B. &a, &b, &l
+#   Hex-Farben     z.B. &#FF00AA
+#   MiniMessage    z.B. <gradient:#ff0000:#0000ff>Text</gradient>
+#
+# MiniMessage-Klick-/Hover-Tags funktionieren hier ebenfalls, deshalb
+# nutzen die Anfrage-Nachrichten unten <click:run_command:'...'>, um
+# ein klickbares [Annehmen] / [Ablehnen] statt eines eingetippten
+# Befehls anzuzeigen.
+#
+# Verfügbare Platzhalter stehen als Kommentar dabei.
+#
+# Hinweis: Der Text für den Teleport-Countdown und die "angekommen"-
+# Nachricht liegt in der config.yml (teleport.countdown.* /
+# teleport.arrival.*), da dort auch festgelegt wird, wo sie angezeigt werden.
+# =====================================================================
+
+prefix: "&l&8[&7Stone&b&lTPA&8]&r "
+
+general:
+  no-permission: "&c✖ Du hast keine Berechtigung dafür."
+  player-only: "&c✖ Dieser Befehl kann nur von Spielern verwendet werden."
+  # {player}
+  player-not-found: "&c✖ Spieler &f{player} &cwurde nicht gefunden."
+  reload-success: "&a✔ Konfiguration und Nachrichten wurden neu geladen."
+
+tpa:
+  usage-tpa: "&c✖ Verwendung: &f/tpa <Spieler>"
+  usage-tpahere: "&c✖ Verwendung: &f/tpahere <Spieler>"
+  cannot-target-self: "&c✖ Du kannst dir selbst keine Teleport-Anfrage senden."
+  # {player}
+  target-requests-disabled: "&c✖ &b{player} &cnimmt momentan keine Teleport-Anfragen an."
+  # {seconds}
+  cooldown: "&c⏱ Bitte warte noch &b{seconds}s&c, bevor du erneut eine Anfrage sendest."
+  # {player}
+  already-have-outgoing: "&c✖ Du hast bereits eine offene Anfrage an &b{player}&c. Nutze zuerst &f/tpacancel&c."
+  target-offline: "&c✖ Dieser Spieler ist nicht mehr online."
+
+  # {player} {seconds}
+  sent-tpa: "&a✔ Teleport-Anfrage an &b{player} &agesendet. &b{seconds}s &azum Antworten."
+  # {player} {seconds}
+  sent-tpahere: "&a✔ Hierher-Teleport-Anfrage an &b{player} &agesendet. &b{seconds}s &azum Antworten."
+
+  # {player}
+  request-received-tpa: "&8&m--------------------&r &b&lTELEPORT-ANFRAGE &8&m--------------------&r\n&b▶ &e{player} &7möchte sich zu &adir &7teleportieren."
+  # {player}
+  request-received-tpahere: "&8&m--------------------&r &b&lTELEPORT-ANFRAGE &8&m--------------------&r\n&b▶ &e{player} &7möchte, dass &adu &7dich zu ihm/ihr teleportierst."
+  # {player} {seconds}
+  request-actions: "  <click:run_command:'/tpaccept {player}'><hover:show_text:'<green>Zum Annehmen klicken'>&a&l[✔ ANNEHMEN]</hover></click>   <click:run_command:'/tpdeny {player}'><hover:show_text:'<red>Zum Ablehnen klicken'>&c&l[✖ ABLEHNEN]</hover></click>  &8• &7läuft ab in &b{seconds}s\n&8&m--------------------------------------------------------"
+  # {player} {seconds} - reine Textversion für Bedrock-Clients, ohne Klick-Elemente
+  request-actions-bedrock: "&7Tippe &b&l/tpaccept {player}&r &7zum Annehmen, oder &c&l/tpdeny {player}&r &7zum Ablehnen.\n&8• &7läuft ab in &b{seconds}s\n&8&m--------------------------------------------------------"
+
+  no-pending-incoming: "&c✖ Du hast keine offene Teleport-Anfrage zum Annehmen."
+  no-pending-incoming-deny: "&c✖ Du hast keine offene Teleport-Anfrage zum Ablehnen."
+  # {player}
+  no-pending-incoming-named: "&c✖ Du hast keine offene Teleport-Anfrage von &b{player}&c."
+  no-pending-outgoing: "&c✖ Du hast keine aktive ausgehende Teleport-Anfrage."
+  multiple-pending-specify: "&e➜ Du hast mehrere offene Anfragen. Gib einen Spieler an: &b/tpaccept <Spieler>"
+
+  # {player}
+  accepted-notify-sender: "&a✔ &b{player} &ahat deine Teleport-Anfrage angenommen."
+  # {player}
+  accepted-notify-target: "&a✔ Du hast die Teleport-Anfrage von &b{player} &aangenommen."
+
+  # {player}
+  denied-notify-sender: "&c✖ &b{player} &chat deine Teleport-Anfrage abgelehnt."
+  # {player}
+  denied-notify-target: "&c✖ Du hast die Teleport-Anfrage von &b{player} &cabgelehnt."
+
+  # {player}
+  cancelled-notify-sender: "&c✖ Du hast deine Teleport-Anfrage an &b{player} &cabgebrochen."
+  # {player}
+  cancelled-notify-target: "&c✖ &b{player} &chat seine/ihre Teleport-Anfrage an dich abgebrochen."
+
+  # {player}
+  expired-notify-sender: "&c⏱ Deine Teleport-Anfrage an &b{player} &cist abgelaufen."
+  # {player}
+  expired-notify-target: "&c⏱ Die Teleport-Anfrage von &b{player} &cist abgelaufen."
+
+  cancelled-move: "&c✖ Teleport abgebrochen, da du dich bewegt hast."
+  cancelled-target-left: "&c✖ Teleport abgebrochen, da der andere Spieler die Verbindung getrennt hat."
+  already-teleporting: "&c✖ Du wirst bereits teleportiert."
+
+tptoggle:
+  enabled: "&a✔ Du nimmst jetzt wieder Teleport-Anfragen an."
+  disabled: "&c✖ Du nimmst keine Teleport-Anfragen mehr an."
+
+dimension:
+  overworld: "Oberwelt"
+  nether: "Der Nether"
+  the_end: "Das Ende"
+
+gui:
+  title: "<gradient:#00E5FF:#B026FF><bold>Stone TPA Einstellungen</bold></gradient>"
+  # {player}
+  player-head-name: "&d&l{player}"
+  player-head-lore:
+    - "&7Deine persönlichen StoneTPA-Einstellungen."
+
+  # Bestätigungsmenü, das dem SENDER direkt nach /tpa oder /tpahere angezeigt
+  # wird, bevor die Anfrage tatsächlich verschickt wird.
+  send:
+    title-tpa: "<gradient:#00E5FF:#B026FF><bold>TPA Anfrage</bold></gradient>"
+    title-tpahere: "<gradient:#00E5FF:#B026FF><bold>TPA Here</bold></gradient>"
+    # {player}
+    target-head-name: "&b&l{player}"
+    # {dimension}
+    dimension-name: "&d&lDimension"
+    dimension-lore:
+      - "&7{dimension}"
+    # {ping} - enthält bereits einen Farbcode je nach Verbindungsqualität
+    ping-name: "&d&lPing"
+    ping-lore:
+      - "&7{ping}"
+    send-name: "&a&l✔ Senden"
+    send-lore:
+      - "&7Klicken, um diese"
+      - "&7Teleport-Anfrage zu senden."
+    cancel-name: "&c&l✖ Abbrechen"
+    cancel-lore:
+      - "&7Klicken, um abzubrechen."
+
+  requests-toggle:
+    name: "&b&lTeleport-Anfragen"
+    lore-on:
+      - "&7Status: &aAN"
+      - ""
+      - "&7Du erhältst aktuell &a/tpa &7und &a/tpahere &7Anfragen."
+      - ""
+      - "&eKlicken zum &cAusschalten"
+    lore-off:
+      - "&7Status: &cAUS"
+      - ""
+      - "&7Du erhältst &ckeine &7Teleport-Anfragen."
+      - ""
+      - "&eKlicken zum &aEinschalten"
+
+  effects-toggle:
+    name: "&d&lTeleport-Effekte"
+    lore-on:
+      - "&7Status: &aAN"
+      - ""
+      - "&7Du siehst &dPartikel &7um dich herum"
+      - "&7bei deinen eigenen Teleports."
+      - ""
+      - "&eKlicken zum &cAusschalten"
+    lore-off:
+      - "&7Status: &cAUS"
+      - ""
+      - "&7Du siehst &ckeine &7Partikel"
+      - "&7bei deinen eigenen Teleports."
+      - ""
+      - "&eKlicken zum &aEinschalten"
+
+  close-button:
+    name: "&c&lSchließen"
+
+help:
+  header: "<gradient:#9AA5B1:#55C6FF><bold>▬▬▬▬▬ StoneTPA Hilfe ▬▬▬▬▬</bold></gradient>"
+  tpa: "&b/tpa <Spieler> &8» &7Anfrage senden, um zu einem Spieler zu teleportieren"
+  tpahere: "&b/tpahere <Spieler> &8» &7Einen Spieler bitten, sich zu dir zu teleportieren"
+  tpaccept: "&b/tpaccept [Spieler] &8» &7Eine offene Teleport-Anfrage annehmen"
+  tpdeny: "&b/tpdeny [Spieler] &8» &7Eine offene Teleport-Anfrage ablehnen"
+  tpacancel: "&b/tpacancel &8» &7Deine eigene ausgehende Anfrage abbrechen"
+  tptoggle: "&b/tptoggle &8» &7Annahme von Teleport-Anfragen umschalten"
+  tpasettings: "&b/tpasettings &8» &7Das Einstellungsmenü öffnen"
+  reload: "&b/stonetpa reload &8» &7Konfiguration und Nachrichten neu laden"
+  checkupdate: "&b/stonetpa checkupdate &8» &7Sofort auf Modrinth nach einer neuen Version prüfen"
+  help: "&b/stonetpa help &8» &7Dieses Hilfe-Menü anzeigen"
+
+update:
+  # {version} {current} {behind}
+  available: "&l&8[&7Stone&b&lTPA&8]&r &fEs gibt eine neue Version: &a{version} &7(du bist auf &c{current}&7, &e{behind} &7dahinter). Schau auf Modrinth für das Update vorbei."
+  versions-behind: "{count} Version(en)"
+  versions-behind-unknown: "einer unbekannten Anzahl an Versionen"
+  check-triggered: "&b⟳ &7Prüfe Modrinth jetzt auf Updates... &8schau in die Konsole für das Ergebnis."

@@ -1,0 +1,214 @@
+# =====================================================================
+#                          StoneTPA - config.yml
+#                        A plugin by Stone Plugins
+# =====================================================================
+#
+# This file contains SETTINGS (switches, times, colors, sounds) as well
+# as the text for the teleport countdown and arrival message below -
+# those two live here (not in messages.yml) so the whole "what does
+# accepting a teleport request look/sound like" experience is
+# configured in one single place.
+#
+# Text for chat/actionbar (shared) plus bossbar/title stays filled in
+# under "messages" at the same time - the "notification" field just picks
+# which ONE is actually shown, so you can switch your mind later without
+# rewriting any text.
+#
+# General command feedback (requests, help, errors, the settings menu, ...)
+# is translated per-language instead, in:
+#   plugins/StoneTPA/languages/<language>/messages.yml
+#
+# Missing options are added automatically on plugin updates. Existing
+# values you changed are never overwritten, even in nested sections.
+# =====================================================================
+
+# Language used for general command feedback. Must match a folder under
+# languages/ - "en" and "de" ship by default. New installs always default
+# to English until an admin changes this.
+language: en
+
+# Settings for teleport requests themselves (/tpa, /tpahere).
+request:
+  # How long a sent request stays valid before it automatically expires, in seconds.
+  expire-seconds: 60
+  # Cooldown between sending requests, in seconds.
+  cooldown-seconds: 10
+
+# Settings and effects for the delayed teleport that happens once a
+# request is accepted.
+teleport:
+  # Delay in seconds before the teleport happens after a request is accepted. 0 = instant.
+  # The Cathedral Growth countdown below is designed around 5 seconds (one
+  # growth stage per second) - other values still work but 5 is where the
+  # five stages land exactly on whole seconds.
+  delay-seconds: 5
+  # Cancel a pending teleport if the player moves (rotating the camera is ignored).
+  cancel-on-move: true
+  # Apply a blindness effect while the countdown is running.
+  blindness-during-delay: false
+  # Temporarily disable fall damage right after any teleport performed by this plugin.
+  disable-fall-damage: true
+
+  # ---------- COUNTDOWN: a single spiral around the player ----------
+  countdown:
+    # Where the countdown message is shown. CHAT, ACTIONBAR, BOSSBAR or TITLE.
+    notification: ACTIONBAR
+
+    # Text shown - only the channel picked above is actually used.
+    # {seconds} = time left, {player} = the other player. "text" covers both
+    # CHAT and ACTIONBAR (they're rarely worded differently). TITLE uses
+    # "title" + "subtitle" together.
+    messages:
+      text: "&b➜ &eTeleporting to &b{player} &ein &b{seconds}&e..."
+      bossbar: "&eTeleporting to &b{player} &ein &b{seconds}&e..."
+      title: "&b&l➜ TELEPORTING ➜"
+      subtitle: "&7To &b{player} &7in &b{seconds}s&7..."
+
+    # A double-helix spiral of colored dust wrapping around the player for
+    # the whole countdown, fading from color-bottom at the feet to
+    # color-top overhead. That's the only visual layer.
+    spiral:
+      color-bottom: "#00B4D8"
+      color-top: "#7B2CBF"
+      size: 1.1
+      radius: 0.5
+      height: 2.2
+      # Ticks for one full bottom-to-top cycle before it repeats.
+      cycle-ticks: 30
+      rotation-speed-degrees: 45.0
+      sound: BLOCK_AMETHYST_BLOCK_CHIME
+      pitch-start: 0.8
+      pitch-end: 1.6
+      sound-volume: 0.6
+      # A crisp, clear "tick" played alongside the ambient sound above, so
+      # the countdown is easy to hear as a countdown, not just ambience.
+      tick-sound: BLOCK_NOTE_BLOCK_PLING
+      tick-volume: 0.5
+
+    # The departure - the instant the player actually vanishes. FLASH is
+    # deliberately avoided here (it needs extra data this server doesn't
+    # support); TOTEM_OF_UNDYING gives the same white-out punch.
+    departure:
+      sound: ITEM_TOTEM_USE
+      particle: TOTEM_OF_UNDYING
+      count: 30
+
+  # ---------- ARRIVAL ----------
+  # Disabled by default - this design puts its whole climax at the
+  # departure point, not the destination. Set enabled: true for a small
+  # sound-only landing cue.
+  arrival:
+    enabled: false
+    notification: TITLE
+    messages:
+      text: "&a✔ &7You have arrived at &b{player}&7!"
+      bossbar: "&a✔ You have arrived at {player}!"
+      title: "&a&l✔ TELEPORTED"
+      subtitle: "&7You are now with &b{player}&7!"
+    sound: ITEM_TOTEM_USE
+    sound-volume: 0.6
+
+  # Shared BossBar look, used whenever "notification" above is BOSSBAR.
+  bossbar:
+    color: PURPLE
+    # PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12 or NOTCHED_20
+    style: PROGRESS
+    duration-seconds: 5
+
+  # Shared Title timing, used whenever "notification" above is TITLE.
+  title:
+    fade-in-ticks: 5
+    stay-ticks: 30
+    fade-out-ticks: 5
+
+# Confirmation menu shown to the SENDER right after typing /tpa <player> or
+# /tpahere <player>, before the request is actually sent. Shows the target's
+# head, which dimension they're currently in, and their connection ping, with
+# a Send button and a Cancel button. Slots are numbered left to right, top
+# to bottom, starting at 0. "size" must be a multiple of 9 (9-54).
+send-gui:
+  enabled: true
+  size: 27
+
+  # A slim decorative frame along the top/bottom rows (not a solid wall of
+  # glass) - accent-material highlights the four corners. Matches the same
+  # look as the /tpasettings menu.
+  filler:
+    enabled: true
+    material: BLACK_STAINED_GLASS_PANE
+    accent-material: PURPLE_STAINED_GLASS_PANE
+
+  target-head:
+    slot: 13
+
+  # Shown directly next to the head: which dimension the target is currently in.
+  dimension-info:
+    slot: 14
+    material: COMPASS
+
+  # Shown on the other side of the head: the target's current connection ping.
+  ping-info:
+    slot: 12
+    material: CLOCK
+
+  send:
+    slot: 16
+    material: LIME_CONCRETE
+
+  cancel:
+    slot: 10
+    material: RED_CONCRETE
+
+  # Played when a player clicks send or cancel inside the menu.
+  click-sound:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1.0
+    pitch: 1.0
+
+# The /tpasettings menu that lets players turn incoming requests and their
+# own teleport particles on or off. Slots are numbered left to right, top
+# to bottom, starting at 0. "size" must be a multiple of 9 (9-54).
+gui:
+  size: 27
+  # A slim decorative frame along the top/bottom rows instead of a solid
+  # wall of glass - accent-material highlights the four corners.
+  filler:
+    enabled: true
+    material: BLACK_STAINED_GLASS_PANE
+    accent-material: PURPLE_STAINED_GLASS_PANE
+
+  # Your own head, shown as a small personal touch at the top of the menu.
+  player-head:
+    enabled: true
+    slot: 4
+
+  requests-toggle:
+    slot: 11
+    material-on: LIME_DYE
+    material-off: GRAY_DYE
+
+  effects-toggle:
+    slot: 15
+    material-on: LIME_DYE
+    material-off: GRAY_DYE
+
+  close-button:
+    enabled: true
+    slot: 22
+    material: BARRIER
+
+  # Played whenever a player clicks a toggle inside the menu.
+  click-sound:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1.0
+    pitch: 1.0
+
+# Checks https://modrinth.com/project/stone-tpa for a newer plugin version.
+# Console feedback is always printed once right on startup. If a newer
+# version is found, everyone with stonetpa.admin (or OP) is reminded
+# every time they join, until the plugin is updated.
+update-checker:
+  enabled: true
+  check-interval-minutes: 60
