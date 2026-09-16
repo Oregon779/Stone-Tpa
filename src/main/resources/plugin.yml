@@ -1,7 +1,7 @@
 name: StoneTPA
 version: '1.0.0'
 main: dev.stonetpa.plugin.StoneTPA
-api-version: '1.21'
+api-version: '26.2'
 softdepend: [floodgate]
 author: Stone Plugins
 description: Adds a full teleport request (TPA) system with a player settings menu, configurable countdown and arrival notifications, and particle effects.
