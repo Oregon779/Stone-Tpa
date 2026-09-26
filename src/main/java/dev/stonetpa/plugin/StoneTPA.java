@@ -25,6 +25,11 @@ import dev.stonetpa.plugin.manager.SendRequestGuiManager;
 import dev.stonetpa.plugin.manager.SettingsGuiManager;
 import dev.stonetpa.plugin.manager.TeleportManager;
 import dev.stonetpa.plugin.manager.UpdateChecker;
+import dev.stonetpa.plugin.model.SendGuiHolder;
+import dev.stonetpa.plugin.model.SettingsGuiHolder;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -77,7 +82,40 @@ public final class StoneTPA extends JavaPlugin {
         if (updateChecker != null) {
             updateChecker.stop();
         }
+
+        // Bukkit automatically cancels our scheduler tasks and unregisters
+        // our listeners on disable, but a few things are NOT covered by that
+        // safety net and would otherwise survive a plain /reload:
+        if (notificationManager != null) {
+            // Boss bars are sent directly to the client and aren't tied to
+            // any Bukkit-tracked plugin state - left alone, one shown during
+            // a countdown would stay frozen on the player's screen forever.
+            notificationManager.hideAll();
+        }
+        closeOpenPluginGuis();
+        if (playerSettingsManager != null) {
+            // Waits briefly for any in-flight playerdata.yml write so a
+            // reload right after a settings change can't drop it.
+            playerSettingsManager.shutdown();
+        }
+
         getLogger().info("StoneTPA has been disabled.");
+    }
+
+    /**
+     * Force-closes any Send-GUI/Settings-GUI a player still has open. Once
+     * this plugin is disabled, its inventory-click listeners are gone too -
+     * without this, the click would go through completely unhandled instead
+     * of being cancelled, letting players freely take the decorative GUI
+     * items out of an inventory that's supposed to be look-only.
+     */
+    private void closeOpenPluginGuis() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            InventoryHolder holder = player.getOpenInventory().getTopInventory().getHolder();
+            if (holder instanceof SendGuiHolder || holder instanceof SettingsGuiHolder) {
+                player.closeInventory();
+            }
+        }
     }
 
     public void reload() {

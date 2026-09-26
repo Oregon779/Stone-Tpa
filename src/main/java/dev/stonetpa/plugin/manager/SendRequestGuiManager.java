@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,19 @@ import java.util.UUID;
 
 public class SendRequestGuiManager {
 
+    private record OpenSendGui(Player sender, Player target, SendGuiHolder holder) {
+    }
+
     private final StoneTPA plugin;
-    private final Map<UUID, BukkitTask> tickTasks = new HashMap<>();
+
+    // One shared repeating task refreshes every open Send-GUI instead of
+    // scheduling a separate BukkitTask per viewer. With up to ~300 players
+    // potentially having this GUI open at once, that would mean ~300
+    // individual scheduler entries doing near-identical work every second;
+    // one task iterating a small map does the same job with a single
+    // scheduler entry. It only runs while at least one Send-GUI is open.
+    private final Map<UUID, OpenSendGui> openGuis = new HashMap<>();
+    private BukkitTask sharedTickTask;
 
     public SendRequestGuiManager(StoneTPA plugin) {
         this.plugin = plugin;
@@ -83,21 +95,34 @@ public class SendRequestGuiManager {
     }
 
     private void startTicking(Player sender, Player target, SendGuiHolder holder) {
-        stopTicking(sender.getUniqueId());
+        openGuis.put(sender.getUniqueId(), new OpenSendGui(sender, target, holder));
+        if (sharedTickTask == null) {
+            sharedTickTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tickAll, 20L, 20L);
+        }
+    }
+
+    private void tickAll() {
+        if (openGuis.isEmpty()) {
+            return;
+        }
 
         ConfigManager cfg = plugin.getConfigManager();
         int dimensionSlot = cfg.getInt("send-gui.dimension-info.slot", 14);
         int pingSlot = cfg.getInt("send-gui.ping-info.slot", 12);
 
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if (!sender.isOnline() || !isShowing(sender, holder)) {
-                stopTicking(sender.getUniqueId());
-                return;
+        List<UUID> toRemove = new ArrayList<>();
+        for (OpenSendGui open : openGuis.values()) {
+            Player sender = open.sender();
+            Player target = open.target();
+
+            if (!sender.isOnline() || !isShowing(sender, open.holder())) {
+                toRemove.add(sender.getUniqueId());
+                continue;
             }
             if (!target.isOnline()) {
                 sender.closeInventory();
-                stopTicking(sender.getUniqueId());
-                return;
+                toRemove.add(sender.getUniqueId());
+                continue;
             }
 
             Inventory top = sender.getOpenInventory().getTopInventory();
@@ -107,15 +132,18 @@ public class SendRequestGuiManager {
             if (pingSlot >= 0 && pingSlot < top.getSize()) {
                 top.setItem(pingSlot, buildPingItem(target));
             }
-        }, 20L, 20L);
+        }
 
-        tickTasks.put(sender.getUniqueId(), task);
+        for (UUID uuid : toRemove) {
+            openGuis.remove(uuid);
+        }
+        stopTickingIfIdle();
     }
 
-    private void stopTicking(UUID uuid) {
-        BukkitTask task = tickTasks.remove(uuid);
-        if (task != null) {
-            task.cancel();
+    private void stopTickingIfIdle() {
+        if (openGuis.isEmpty() && sharedTickTask != null) {
+            sharedTickTask.cancel();
+            sharedTickTask = null;
         }
     }
 
@@ -124,7 +152,8 @@ public class SendRequestGuiManager {
     }
 
     public void stopTracking(Player sender) {
-        stopTicking(sender.getUniqueId());
+        openGuis.remove(sender.getUniqueId());
+        stopTickingIfIdle();
     }
 
     private void applyBorder(Inventory inventory, int size, ConfigManager cfg) {

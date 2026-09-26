@@ -34,7 +34,10 @@ public final class ConfigUpdater {
         }
     }
 
-    private static int mergeSection(ConfigurationSection defaults, ConfigurationSection current) {
+    // Package-private (not private) so ConfigUpdaterTest can exercise the
+    // actual recursive merge logic directly with plain YamlConfiguration
+    // objects, without needing a JavaPlugin/server instance.
+    static int mergeSection(ConfigurationSection defaults, ConfigurationSection current) {
         int added = 0;
         for (String key : defaults.getKeys(false)) {
             Object defaultValue = defaults.get(key);

@@ -25,4 +25,14 @@ public class CooldownManager {
     public void setUsed(UUID uuid) {
         lastUse.put(uuid, System.currentTimeMillis());
     }
+
+    /**
+     * Drops a player's cooldown entry. Without this, every player who ever
+     * sent a single request leaves one UUID -> timestamp entry behind
+     * forever - getRemaining() only cleans up an entry once someone looks it
+     * up again, which never happens for a player who left for good.
+     */
+    public void clear(UUID uuid) {
+        lastUse.remove(uuid);
+    }
 }

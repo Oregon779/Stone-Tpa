@@ -101,22 +101,34 @@ public class MessageManager {
     }
 
     public String getRaw(String path) {
-        YamlConfiguration active = languageCache.get(activeLanguage);
-        String value = (active != null) ? active.getString(path) : null;
-
-        if (value == null) {
-            YamlConfiguration fallback = languageCache.get("en");
-            value = (fallback != null) ? fallback.getString(path) : null;
-        }
+        String value = resolveString(languageCache.get(activeLanguage), languageCache.get("en"), path);
         return value != null ? value : "";
     }
 
     public java.util.List<String> getRawList(String path) {
-        YamlConfiguration active = languageCache.get(activeLanguage);
-        java.util.List<String> value = (active != null) ? active.getStringList(path) : null;
+        return resolveList(languageCache.get(activeLanguage), languageCache.get("en"), path);
+    }
 
-        if (value == null || value.isEmpty()) {
-            YamlConfiguration fallback = languageCache.get("en");
+    // Package-private and Bukkit-free (plain YamlConfiguration in, plain
+    // value out) so the fallback rule itself - "fall back to English only
+    // when the active language truly doesn't have this key, never when it
+    // has one that just happens to be empty/blank" - is directly unit
+    // testable without a plugin or server instance.
+
+    static String resolveString(YamlConfiguration active, YamlConfiguration fallback, String path) {
+        String value = (active != null) ? active.getString(path) : null;
+        if (value == null && fallback != null) {
+            value = fallback.getString(path);
+        }
+        return value;
+    }
+
+    static java.util.List<String> resolveList(YamlConfiguration active, YamlConfiguration fallback, String path) {
+        // isSet(), not isEmpty(): an admin who deliberately configures an
+        // empty list (e.g. to hide a lore line entirely) must get an empty
+        // list back, not a silent fallback to the English one.
+        java.util.List<String> value = (active != null && active.isSet(path)) ? active.getStringList(path) : null;
+        if (value == null) {
             value = (fallback != null) ? fallback.getStringList(path) : java.util.List.of();
         }
         return value;
@@ -128,9 +140,19 @@ public class MessageManager {
         }
         String result = raw;
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            result = result.replace("{" + entry.getKey() + "}", entry.getValue());
+            // Placeholder VALUES can come from outside this plugin's own
+            // messages.yml (e.g. a version string from the Modrinth API) and
+            // must never be interpreted as MiniMessage markup themselves -
+            // escaping '<' here keeps them literal text no matter what they
+            // contain, while the surrounding message template is still
+            // parsed normally.
+            result = result.replace("{" + entry.getKey() + "}", escapeMiniMessage(entry.getValue()));
         }
         return result;
+    }
+
+    private String escapeMiniMessage(String value) {
+        return value == null ? "" : value.replace("<", "\\<");
     }
 
     private String convertLegacyToMiniMessage(String input) {

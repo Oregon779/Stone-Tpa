@@ -22,5 +22,6 @@ public class PlayerQuitListener implements Listener {
 
         plugin.getTeleportManager().cancelForDisconnectedOtherParty(player.getUniqueId());
         plugin.getSendRequestGuiManager().stopTracking(player);
+        plugin.getCooldownManager().clear(player.getUniqueId());
     }
 }

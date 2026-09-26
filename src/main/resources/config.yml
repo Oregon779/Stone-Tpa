@@ -42,7 +42,9 @@ teleport:
   # growth stage per second) - other values still work but 5 is where the
   # five stages land exactly on whole seconds.
   delay-seconds: 5
-  # Cancel a pending teleport if the player moves (rotating the camera is ignored).
+  # Cancel a pending teleport if the player moves (rotating the camera is
+  # ignored) or is teleported elsewhere by anything else (ender pearl, /warp,
+  # another plugin, ...) before the delay is up.
   cancel-on-move: true
   # Apply a blindness effect while the countdown is running.
   blindness-during-delay: false

@@ -62,6 +62,24 @@ public class NotificationManager {
         }
     }
 
+    /**
+     * Hides every currently-active boss bar. Called from onDisable(): a boss
+     * bar shown via the Adventure API isn't tracked by Bukkit itself, so
+     * unlike scheduler tasks and listeners it does NOT get cleaned up
+     * automatically when the plugin is disabled - without this, a player
+     * mid-countdown during a /reload would be left with a boss bar frozen on
+     * their screen forever.
+     */
+    public void hideAll() {
+        for (Map.Entry<UUID, BossBar> entry : activeBossBars.entrySet()) {
+            Player player = Bukkit.getPlayer(entry.getKey());
+            if (player != null) {
+                player.hideBossBar(entry.getValue());
+            }
+        }
+        activeBossBars.clear();
+    }
+
     private void dispatch(Player player, String section, MessageDisplayType type, Map<String, String> placeholders, boolean autoHide) {
         ConfigManager cfg = plugin.getConfigManager();
         MessageManager mm = plugin.getMessageManager();

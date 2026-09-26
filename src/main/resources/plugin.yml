@@ -8,50 +8,42 @@ description: Adds a full teleport request (TPA) system with a player settings me
 folia-supported: false
 
 commands:
+  # No "permission:"/"permission-message:" declared here on purpose - Bukkit
+  # would gate the command BEFORE our executor ever runs, and with an empty
+  # permission-message it does so completely silently (no feedback at all).
+  # Each command already does its own stonetpa.use check and sends a proper
+  # localized message, so the gate stays entirely in-code (see StoneTPACommand
+  # below, which uses the same pattern for stonetpa.admin).
   tpa:
     description: Send a teleport request to another player.
     usage: /tpa <player>
-    permission: stonetpa.use
-    permission-message: ""
 
   tpahere:
     description: Request another player to teleport to you.
     usage: /tpahere <player>
-    permission: stonetpa.use
-    permission-message: ""
 
   tpaccept:
     description: Accept a pending teleport request.
     usage: /tpaccept [player]
     aliases: [tpaaccept]
-    permission: stonetpa.use
-    permission-message: ""
 
   tpdeny:
     description: Deny a pending teleport request.
     usage: /tpdeny [player]
     aliases: [tpadeny]
-    permission: stonetpa.use
-    permission-message: ""
 
   tpacancel:
     description: Cancel your own outgoing teleport request.
     usage: /tpacancel
-    permission: stonetpa.use
-    permission-message: ""
 
   tptoggle:
     description: Toggle whether you accept incoming teleport requests.
     usage: /tptoggle
-    permission: stonetpa.use
-    permission-message: ""
 
   tpasettings:
     description: Open the Stone TPA settings menu.
     usage: /tpasettings
     aliases: [tpset, tpsettings]
-    permission: stonetpa.use
-    permission-message: ""
 
   # Intentionally has NO permission node - this command must always stay
   # visible/runnable for everyone. Its own "help" subcommand only lists the

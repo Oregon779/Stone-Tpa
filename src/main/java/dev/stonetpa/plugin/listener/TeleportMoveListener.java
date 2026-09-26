@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class TeleportMoveListener implements Listener {
 
@@ -54,5 +55,25 @@ public class TeleportMoveListener implements Listener {
                 || from.getBlockZ() != to.getBlockZ()) {
             plugin.getTeleportManager().cancelTeleport(player, false);
         }
+    }
+
+    // Covers teleports PlayerMoveEvent never sees: an ender pearl, /warp,
+    // /spawn, another plugin's teleport, ... Safe against cancelling our OWN
+    // accepted teleport: TeleportManager already removes the player from
+    // "pending" before it ever calls player.teleportAsync(), so by the time
+    // that teleport fires this event, hasPending() is already false here.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+
+        if (!plugin.getTeleportManager().hasPending(player.getUniqueId())) {
+            return;
+        }
+
+        if (!plugin.getConfigManager().getBoolean("teleport.cancel-on-move", true)) {
+            return;
+        }
+
+        plugin.getTeleportManager().cancelTeleport(player, false);
     }
 }
