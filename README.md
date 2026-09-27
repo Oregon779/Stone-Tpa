@@ -11,21 +11,16 @@ Modrinth-Update-Checker.
 | | |
 |---|---|
 | **Server** | Paper (kein Spigot/Bukkit-only, kein Fabric/Forge/Velocity/BungeeCord) |
-| **API-Version** | `26.2` ([`paper-api` `26.2.build.124-stable`](docs/Building.md)) |
+| **API-Version** | `26.2` ([`paper-api` `26.2.build.124-stable`](WIKI.md#building)) |
 | **Java** | 25 |
 | **Soft-Dependency** | [Floodgate](https://geysermc.org/wiki/floodgate/) (optional, nur für Bedrock-Erkennung) |
 
 ## Dokumentation
 
-Die vollständige Dokumentation liegt im [`docs/`](docs/Home.md)-Ordner:
-
-- **[Home / Übersicht](docs/Home.md)** — Einstiegspunkt mit Links auf alles
-- **[Features](docs/Features.md)** — genaue Beschreibung jedes Features
-- **[Commands](docs/Commands.md)** — Befehlsreferenz
-- **[Permissions](docs/Permissions.md)** — alle Permission-Nodes und ihre Wirkung
-- **[Configuration](docs/Configuration.md)** — `config.yml` Abschnitt für Abschnitt erklärt
-- **[Building](docs/Building.md)** — Build aus dem Quellcode, Abhängigkeiten, Tests
-- **[Changelog](docs/Changelog.md)** — Portierungs- und Bugfix-Historie
+Die vollständige Dokumentation steht in **[WIKI.md](WIKI.md)** — Features,
+Commands, Permissions, `config.yml` Abschnitt für Abschnitt, Build-Anleitung
+und Changelog, alles in einer Datei (Ersatz für das GitHub-Wiki, siehe
+[WIKI.md](WIKI.md) für den Hintergrund).
 
 ## Schnellstart
 
@@ -37,7 +32,7 @@ Die fertige JAR liegt danach unter `target/StoneTPA-1.0.0.jar` und kann in
 den `plugins/`-Ordner eines Paper-26.2-Servers gelegt werden. Details
 (insbesondere zu den benötigten Paper-Core-Abhängigkeiten, die nicht über
 den öffentlichen papermc-Repository-Proxy auflösbar sein können) stehen in
-[docs/Building.md](docs/Building.md).
+[WIKI.md](WIKI.md#building).
 
 ## Lizenz / Autor
 
